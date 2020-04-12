@@ -67,6 +67,7 @@ class JitsiViewController: UIViewController {
             builder.audioOnly = self.audioOnly ?? false
             builder.audioMuted = self.audioMuted ?? false
             builder.videoMuted = self.videoMuted ?? false
+            builder.setFeatureFlag("pip.enabled", withValue: false)
         }
 //        print("Options, \(options.serverURL)!")
                
@@ -75,6 +76,7 @@ class JitsiViewController: UIViewController {
         // Enable jitsimeet view to be a view that can be displayed
         // on top of all the things, and let the coordinator to manage
         // the view state and interactions
+        
         pipViewCoordinator = PiPViewCoordinator(withView: jitsiMeetView)
         pipViewCoordinator?.configureAsStickyView(withParentView: view)
 
@@ -98,10 +100,12 @@ extension JitsiViewController: JitsiMeetViewDelegate {
     func conferenceTerminated(_ data: [AnyHashable : Any]!) {
         //print("CONFERENCE TERMINATED")
         DispatchQueue.main.async {
-            self.pipViewCoordinator?.hide() { _ in
-                self.cleanUp()
-                self.dismiss(animated: true, completion: nil)
-            }
+//            self.pipViewCoordinator?.hide() { _ in
+//                self.cleanUp()
+//                self.dismiss(animated: true, completion: nil)
+//            }
+            self.cleanUp()
+            self.dismiss(animated: true, completion: nil)
         }
        
     }

@@ -1,5 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-  package="com.gunschu.jitsi_meet">
+    package="com.gunschu.jitsi_meet">
+
     <application>
         <activity
             android:name=".JitsiMeetPluginActivity"
@@ -7,7 +9,7 @@
             android:launchMode="singleTask"
             android:resizeableActivity="true"
             android:supportsPictureInPicture="true"
-            android:windowSoftInputMode="adjustResize">
-        </activity>
+            android:windowSoftInputMode="adjustResize"></activity>
     </application>
+
 </manifest>

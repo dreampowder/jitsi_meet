@@ -1,8 +1,11 @@
 package com.gunschu.jitsi_meet
 
 import android.app.Activity
+import android.content.Intent
 import android.util.Log
 import androidx.annotation.NonNull
+import com.gunschu.jitsi_meet.platform_view.JitsiViewPlatformViewFactory
+import com.gunschu.jitsi_meet.platform_view.PluginActivityHolder
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
@@ -12,6 +15,7 @@ import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
 import io.flutter.plugin.common.PluginRegistry.Registrar
+import io.flutter.plugin.common.StandardMessageCodec
 import org.jitsi.meet.sdk.JitsiMeetConferenceOptions
 import org.jitsi.meet.sdk.JitsiMeetUserInfo
 import java.net.URL
@@ -42,6 +46,8 @@ public class JitsiMeetPlugin() : FlutterPlugin, MethodCallHandler, ActivityAware
 
         eventChannel = EventChannel(flutterPluginBinding.binaryMessenger, JITSI_EVENT_CHANNEL)
         eventChannel.setStreamHandler(JitsiMeetEventStreamHandler.instance)
+
+        flutterPluginBinding.platformViewRegistry.registerViewFactory("JitsiWidget",JitsiViewPlatformViewFactory(StandardMessageCodec.INSTANCE));
     }
 
     override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
@@ -131,6 +137,7 @@ public class JitsiMeetPlugin() : FlutterPlugin, MethodCallHandler, ActivityAware
                 .setAudioOnly(call.argument("audioOnly") ?: false)
                 .setVideoMuted(call.argument("videoMuted") ?: false)
                 .setUserInfo(userInfo)
+                .setFeatureFlag("pip.enabled",false)
                 .build()
 
         JitsiMeetPluginActivity.launchActivity(activity, options)
@@ -142,6 +149,7 @@ public class JitsiMeetPlugin() : FlutterPlugin, MethodCallHandler, ActivityAware
      */
     override fun onDetachedFromActivity() {
         this.activity = null
+        PluginActivityHolder.getInstance().activity = null
     }
 
     override fun onReattachedToActivityForConfigChanges(binding: ActivityPluginBinding) {
@@ -150,6 +158,7 @@ public class JitsiMeetPlugin() : FlutterPlugin, MethodCallHandler, ActivityAware
 
     override fun onAttachedToActivity(binding: ActivityPluginBinding) {
         this.activity = binding.activity
+        PluginActivityHolder.getInstance().activity = this.activity
     }
 
     override fun onDetachedFromActivityForConfigChanges() {

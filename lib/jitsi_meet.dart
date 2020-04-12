@@ -1,7 +1,10 @@
 import 'dart:async';
+import 'dart:convert';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:jitsi_meet/jitsi_platform_view.dart';
 
 import 'jitsi_meeting_listener.dart';
 
@@ -19,6 +22,22 @@ class JitsiMeet {
     caseSensitive: false,
     multiLine: false,
   );
+
+  static JitsiMeetingWidget getWidget(JitsiMeetingOptions options){
+    assert(options != null, "options are null");
+    assert(options.room != null, "room is null");
+    assert(options.room.trim().isNotEmpty, "room is empty");
+    assert(options.room.trim().length >= 3, "Minimum room length is 3");
+    assert(_allowCharsForRoom.hasMatch(options.room),
+    "Only alphanumeric, dash, and underscore chars allowed");
+
+    // Validate serverURL is absolute if it is not null or empty
+    if ( options.serverURL?.isNotEmpty ?? false) {
+      assert(Uri.parse(options.serverURL).isAbsolute,
+      "URL must be of the format <scheme>://<host>[/path], like https://someHost.com");
+    }
+    return JitsiMeetingWidget(options: options,);
+  }
 
   /// Joins a meeting based on the JitsiMeetingOptions passed in
   static Future<JitsiMeetingResponse> joinMeeting(
@@ -126,15 +145,44 @@ class JitsiMeetingOptions {
   String userDisplayName;
   String userEmail;
 
-  @override
-  String toString() {
-    return 'JitsiMeetingOptions{room: $room, serverURL: $serverURL, subject: $subject, token: $token, audioMuted: $audioMuted, audioOnly: $audioOnly, videoMuted: $videoMuted, userDisplayName: $userDisplayName, userEmail: $userEmail}';
-  }
+  JitsiMeetingOptions({
+    this.room,
+    this.serverURL,
+    this.subject,
+    this.token,
+    this.audioMuted,
+    this.audioOnly,
+    this.videoMuted,
+    this.userDisplayName,
+    this.userEmail,
+  });
 
-/* Not used yet, needs more research
-  Bundle colorScheme;
-  Bundle featureFlags;
-  String userAvatarURL;
-*/
+  factory JitsiMeetingOptions.fromRawJson(String str) => JitsiMeetingOptions.fromJson(json.decode(str));
 
+  String toRawJson() => json.encode(toJson());
+
+  factory JitsiMeetingOptions.fromJson(Map<String, dynamic> json) => JitsiMeetingOptions(
+    room: json["room"] == null ? null : json["room"],
+    serverURL: json["serverURL"] == null ? null : json["serverURL"],
+    subject: json["subject"] == null ? null : json["subject"],
+    token: json["token"] == null ? null : json["token"],
+    audioMuted: json["audioMuted"] == null ? null : json["audioMuted"],
+    audioOnly: json["audioOnly"] == null ? null : json["audioOnly"],
+    videoMuted: json["videoMuted"] == null ? null : json["videoMuted"],
+    userDisplayName: json["userDisplayName"] == null ? null : json["userDisplayName"],
+    userEmail: json["userEmail"] == null ? null : json["userEmail"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "room": room == null ? null : room,
+    "serverURL": serverURL == null ? null : serverURL,
+    "subject": subject == null ? null : subject,
+    "token": token == null ? null : token,
+    "audioMuted": audioMuted == null ? null : audioMuted,
+    "audioOnly": audioOnly == null ? null : audioOnly,
+    "videoMuted": videoMuted == null ? null : videoMuted,
+    "userDisplayName": userDisplayName == null ? null : userDisplayName,
+    "userEmail": userEmail == null ? null : userEmail,
+  };
 }
+

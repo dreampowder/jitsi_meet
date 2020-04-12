@@ -21,6 +21,9 @@ public class SwiftJitsiMeetPlugin: NSObject, FlutterPlugin {
         let instance = SwiftJitsiMeetPlugin(uiViewController: viewController)
         
         registrar.addMethodCallDelegate(instance, channel: channel)
+        
+        registrar.register(JitsiWidgetFactory(), withId: "JitsiWidget")
+        
     }
     
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
@@ -37,7 +40,6 @@ public class SwiftJitsiMeetPlugin: NSObject, FlutterPlugin {
             {
                 if let roomName = myArgs["room"] as? String {
                     if let serverURL = myArgs["serverURL"] as? String {
-//                        print("serverUrl: ", serverURL);
                         jitsiViewController?.serverUrl = URL(string: serverURL);
                     }
                     let subject = myArgs["subject"] as? String
@@ -48,10 +50,6 @@ public class SwiftJitsiMeetPlugin: NSObject, FlutterPlugin {
                     jitsiViewController?.subject = subject;
                     jitsiViewController?.jistiMeetUserInfo.displayName = displayName;
                     jitsiViewController?.jistiMeetUserInfo.email = email;
-                
-                    //                    let avatar = myArgs["userAvatarURL"] as? String,
-                    //                    let avatarURL  = URL(string: avatar)
-                    //                    jitsiViewController?.jistiMeetUserInfo.avatar = avatarURL;
                     if let audioOnly = myArgs["audioOnly"] as? Int {
                         let audioOnlyBool = audioOnly > 0 ? true : false
                         jitsiViewController?.audioOnly = audioOnlyBool;
@@ -72,24 +70,12 @@ public class SwiftJitsiMeetPlugin: NSObject, FlutterPlugin {
             } else {
                 result(FlutterError.init(code: "400", message: "arguments are null for method: (joinMeeting)", details: "arguments are null for method: (joinMeeting)"))
             }
+//            let navigationController = UINavigationController(rootViewController: (jitsiViewController)!)
+//            navigationController.modalPresentationStyle = .fullScreen
+//            self.uiVC.present(navigationController, animated: true)
             
-            
-            //jitsiViewController!.roomName = call.arguments!["room"] as? String;
-            // jitsiViewController!.subject = call.arguments!["subject"] as? String;
-            // jitsiViewController?.jistiMeetUserInfo.displayName = call.arguments?["userDisplayName"] as? String;
-            // jitsiViewController?.jistiMeetUserInfo.email = call.arguments?["userEmail"] as? String;
-            // jitsiViewController?.jistiMeetUserInfo.avatar = call.arguments["userAvatarURL"] as? URL;
-            //jitsiViewController.serverURL = call.argument["serverURL"] as? URL;
-            //  jitsiViewController?.audioOnly = call.arguments?["audioOnly"] as? Bool;
-            //  jitsiViewController?.audioMuted = call.arguments?["audioMuted"] as? Bool;
-            // jitsiViewController?.videoMuted = call.arguments?["videoMuted"] as? Bool;
-            
-            let navigationController = UINavigationController(rootViewController: (jitsiViewController)!)
-            navigationController.modalPresentationStyle = .fullScreen
-            self.uiVC.present(navigationController, animated: true)
-            
-            //self.uiVC.modalPresentationStyle = .fullScreen
-            //self.uiVC.present(jitsiViewController!, animated: true, completion: nil)
+            jitsiViewController?.modalPresentationStyle = .fullScreen
+            self.uiVC.present(jitsiViewController!, animated: true, completion: nil)
             //print("OPEN JITSI MEET CALLED")
         }
         
