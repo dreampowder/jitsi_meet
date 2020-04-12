@@ -11,13 +11,44 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+
+
+  @override
+  void dispose() {
+    super.dispose();
+    JitsiMeet.removeAllListeners();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: HomePage(),
+    );
+  }
+
+}
+
+class HomePage extends StatefulWidget{
+
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
   final serverText = TextEditingController();
+
   final roomText = TextEditingController(text: "plugintestroom");
+
   final subjectText = TextEditingController(text: "My Plugin Test Meeting");
+
   final nameText = TextEditingController(text: "Plugin Test User");
+
   final emailText = TextEditingController(text: "fake@email.com");
+
   var isAudioOnly = true;
+
   var isAudioMuted = true;
+
   var isVideoMuted = true;
 
   @override
@@ -31,122 +62,114 @@ class _MyAppState extends State<MyApp> {
   }
 
   @override
-  void dispose() {
-    super.dispose();
-    JitsiMeet.removeAllListeners();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Plugin example app'),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Plugin example app'),
+      ),
+      body: Container(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 16.0,
         ),
-        body: Container(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 16.0,
-          ),
-          child: SingleChildScrollView(
-            child: Column(
-              children: <Widget>[
-                SizedBox(
-                  height: 24.0,
-                ),
-                TextField(
-                  controller: serverText,
-                  decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: "Server URL",
-                      hintText: "Hint: Leave empty for meet.jitsi.si"),
-                ),
-                SizedBox(
-                  height: 16.0,
-                ),
-                TextField(
-                  controller: roomText,
-                  decoration: InputDecoration(
+        child: SingleChildScrollView(
+          child: Column(
+            children: <Widget>[
+              SizedBox(
+                height: 24.0,
+              ),
+              TextField(
+                controller: serverText,
+                decoration: InputDecoration(
                     border: OutlineInputBorder(),
-                    labelText: "Room",
+                    labelText: "Server URL",
+                    hintText: "Hint: Leave empty for meet.jitsi.si"),
+              ),
+              SizedBox(
+                height: 16.0,
+              ),
+              TextField(
+                controller: roomText,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: "Room",
+                ),
+              ),
+              SizedBox(
+                height: 16.0,
+              ),
+              TextField(
+                controller: subjectText,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: "Subject",
+                ),
+              ),
+              SizedBox(
+                height: 16.0,
+              ),
+              TextField(
+                controller: nameText,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: "Display Name",
+                ),
+              ),
+              SizedBox(
+                height: 16.0,
+              ),
+              TextField(
+                controller: emailText,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: "Email",
+                ),
+              ),
+              SizedBox(
+                height: 16.0,
+              ),
+              CheckboxListTile(
+                title: Text("Audio Only"),
+                value: isAudioOnly,
+                onChanged: _onAudioOnlyChanged,
+              ),
+              SizedBox(
+                height: 16.0,
+              ),
+              CheckboxListTile(
+                title: Text("Audio Muted"),
+                value: isAudioMuted,
+                onChanged: _onAudioMutedChanged,
+              ),
+              SizedBox(
+                height: 16.0,
+              ),
+              CheckboxListTile(
+                title: Text("Video Muted"),
+                value: isVideoMuted,
+                onChanged: _onVideoMutedChanged,
+              ),
+              Divider(
+                height: 48.0,
+                thickness: 2.0,
+              ),
+              SizedBox(
+                height: 64.0,
+                width: double.maxFinite,
+                child: RaisedButton(
+                  onPressed: () {
+                    _joinMeeting();
+                  },
+                  child: Text(
+                    "Join Meeting",
+                    style: TextStyle(color: Colors.white),
                   ),
+                  color: Colors.blue,
                 ),
-                SizedBox(
-                  height: 16.0,
-                ),
-                TextField(
-                  controller: subjectText,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: "Subject",
-                  ),
-                ),
-                SizedBox(
-                  height: 16.0,
-                ),
-                TextField(
-                  controller: nameText,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: "Display Name",
-                  ),
-                ),
-                SizedBox(
-                  height: 16.0,
-                ),
-                TextField(
-                  controller: emailText,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: "Email",
-                  ),
-                ),
-                SizedBox(
-                  height: 16.0,
-                ),
-                CheckboxListTile(
-                  title: Text("Audio Only"),
-                  value: isAudioOnly,
-                  onChanged: _onAudioOnlyChanged,
-                ),
-                SizedBox(
-                  height: 16.0,
-                ),
-                CheckboxListTile(
-                  title: Text("Audio Muted"),
-                  value: isAudioMuted,
-                  onChanged: _onAudioMutedChanged,
-                ),
-                SizedBox(
-                  height: 16.0,
-                ),
-                CheckboxListTile(
-                  title: Text("Video Muted"),
-                  value: isVideoMuted,
-                  onChanged: _onVideoMutedChanged,
-                ),
-                Divider(
-                  height: 48.0,
-                  thickness: 2.0,
-                ),
-                SizedBox(
-                  height: 64.0,
-                  width: double.maxFinite,
-                  child: RaisedButton(
-                    onPressed: () {
-                      _joinMeeting();
-                    },
-                    child: Text(
-                      "Join Meeting",
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    color: Colors.blue,
-                  ),
-                ),
-                SizedBox(
-                  height: 48.0,
-                ),
-              ],
-            ),
+              ),
+              SizedBox(
+                height: 48.0,
+              ),
+            ],
           ),
         ),
       ),
@@ -173,7 +196,7 @@ class _MyAppState extends State<MyApp> {
 
   _joinMeeting() async {
     String serverUrl =
-        serverText.text?.trim()?.isEmpty ?? "" ? null : serverText.text;
+    serverText.text?.trim()?.isEmpty ?? "" ? null : serverText.text;
 
     try {
       var options = JitsiMeetingOptions()
@@ -193,6 +216,25 @@ class _MyAppState extends State<MyApp> {
     }
   }
 
+  _joinMeetingWithPlatformView(BuildContext context){
+    String serverUrl =
+    serverText.text?.trim()?.isEmpty ?? "" ? null : serverText.text;
+    var options = JitsiMeetingOptions()
+      ..room = roomText.text
+      ..serverURL = serverUrl
+      ..subject = subjectText.text
+      ..userDisplayName = nameText.text
+      ..userEmail = emailText.text
+      ..audioOnly = isAudioOnly
+      ..audioMuted = isAudioMuted
+      ..videoMuted = isVideoMuted;
+    Navigator.of(context).push(
+        MaterialPageRoute(
+            builder: (c)=>JitsiExampleView(options)
+        )
+    );
+  }
+
   void _onConferenceWillJoin() {
     debugPrint("_onConferenceWillJoin broadcasted");
   }
@@ -207,5 +249,19 @@ class _MyAppState extends State<MyApp> {
 
   _onError(error) {
     debugPrint("_onError broadcasted");
+  }
+}
+
+class JitsiExampleView extends StatelessWidget{
+  final JitsiMeetingOptions options;
+
+  JitsiExampleView(this.options);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text("Jitsi Widget!"),),
+      body: JitsiMeet.getWidget(options),
+    );
   }
 }
