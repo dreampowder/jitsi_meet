@@ -142,6 +142,7 @@ public class JitsiMeetPlugin() : FlutterPlugin, MethodCallHandler, ActivityAware
                 .setFeatureFlag("calendar.enabled", false)
                 .setFeatureFlag("chat.enabled",false)
                 .setFeatureFlag("invite.enabled", false)
+                .setWelcomePageEnabled(false)
                 .build()
 
         JitsiMeetPluginActivity.launchActivity(activity, options)
