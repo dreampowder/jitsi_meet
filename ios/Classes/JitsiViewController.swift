@@ -68,6 +68,10 @@ class JitsiViewController: UIViewController {
             builder.audioMuted = self.audioMuted ?? false
             builder.videoMuted = self.videoMuted ?? false
             builder.setFeatureFlag("pip.enabled", withValue: false)
+            builder.setFeatureFlag("add-people.enabled", withValue: false)
+            builder.setFeatureFlag("calendar.enabled", withValue: false)
+            builder.setFeatureFlag("chat.enabled", withValue: false)
+            builder.setFeatureFlag("invite.enabled", withValue: false)
         }
 //        print("Options, \(options.serverURL)!")
                
