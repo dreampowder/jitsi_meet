@@ -16,6 +16,7 @@ import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
 import io.flutter.plugin.common.PluginRegistry.Registrar
 import io.flutter.plugin.common.StandardMessageCodec
+import org.jitsi.meet.sdk.JitsiMeet
 import org.jitsi.meet.sdk.JitsiMeetConferenceOptions
 import org.jitsi.meet.sdk.JitsiMeetUserInfo
 import java.net.URL
@@ -145,6 +146,23 @@ public class JitsiMeetPlugin() : FlutterPlugin, MethodCallHandler, ActivityAware
                 .setWelcomePageEnabled(false)
                 .build()
 
+        val defaultOptions =  JitsiMeetConferenceOptions.Builder()
+//                .setRoom(room)
+//                .setServerURL(serverURL) TODO: use serverURL after android SDK is fixed: https://github.com/jitsi/jitsi-meet/issues/5504#issue-590910863
+//                .setSubject(call.argument("subject"))
+//                .setToken(call.argument("token"))
+                .setAudioMuted(call.argument("audioMuted") ?: false)
+                .setAudioOnly(call.argument("audioOnly") ?: false)
+                .setVideoMuted(call.argument("videoMuted") ?: false)
+                .setUserInfo(userInfo)
+                .setFeatureFlag("pip.enabled",false)
+                .setFeatureFlag("add-people.enabled", false)
+                .setFeatureFlag("calendar.enabled", false)
+                .setFeatureFlag("chat.enabled",false)
+                .setFeatureFlag("invite.enabled", false)
+                .setWelcomePageEnabled(false)
+                .build()
+        JitsiMeet.setDefaultConferenceOptions(defaultOptions);
         JitsiMeetPluginActivity.launchActivity(activity, options)
         result.success("Successfully joined room: $room")
     }
