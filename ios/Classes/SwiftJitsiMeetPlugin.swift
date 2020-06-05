@@ -14,7 +14,7 @@ public class SwiftJitsiMeetPlugin: NSObject, FlutterPlugin {
     
     public static func register(with registrar: FlutterPluginRegistrar) {
         let channel = FlutterMethodChannel(name: "jitsi_meet", binaryMessenger: registrar.messenger())
-        
+        JMCallKitProxy.enabled = false;
         let viewController: UIViewController =
             (UIApplication.shared.delegate?.window??.rootViewController)!
         

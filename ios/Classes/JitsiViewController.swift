@@ -72,6 +72,7 @@ class JitsiViewController: UIViewController {
             builder.setFeatureFlag("calendar.enabled", withValue: false)
             builder.setFeatureFlag("chat.enabled", withValue: false)
             builder.setFeatureFlag("invite.enabled", withValue: false)
+            builder.setFeatureFlag("call-integration.enabled", withValue: false)
         }
 //        print("Options, \(options.serverURL)!")
                
